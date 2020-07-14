@@ -10,8 +10,29 @@ This simple reporter raises alerts to Github Issues when Jest Tests fails has gi
 
 ## Applied
 
-The way I have been using it is for tests that are triggered by a machine, either as the result of an event or on a scheduler - eg for synthetic tests [(example with Github actions)](.github/workflows/synthetics-example.yml).
+The way I have been using it is for tests that are triggered by a machine, either as the result of an event or on a scheduler - eg for synthetic tests .
 
+Here is an example with Github Actions that you could store under `.github/workflows/example.yml`
+
+```yml
+name: Synthetic API Tests
+on:
+  schedule:
+    - cron: 0 0 * * *
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: "Run integration tests"
+        run: npm ci && npm run test
+        env:
+            GH_SYNTH_TOKEN: ${{ secrets.GH_SYNTH_TOKEN }}
+            ISSUE_TITLE: "Synthetic API Tests: Unexpected response from API"
+```
 
 ## Set up
 
@@ -44,3 +65,4 @@ If a machine runs your tests, you can use the following options.
 For maximum results, you should be notified of new issues via email.
 
 Try the [account notifications page](https://github.com/settings/notifications), specifically the section under 'Issues' and make sure that you are receiving the notifications via email.
+
